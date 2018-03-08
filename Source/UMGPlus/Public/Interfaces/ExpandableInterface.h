@@ -17,8 +17,10 @@ class UMGPLUS_API IExpandableInterface
 	
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "ListItem")
-	bool IsExpanded();
+	bool IsExpanded() const;
+	virtual bool IsExpanded_Implementation() const { return false; }
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "ListItem")
 	void Expand();
+	virtual void Expand_Implementation() { }
 };

@@ -18,13 +18,18 @@ class UMGPLUS_API ISelectorInterface
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	int32 GetSelectedIndex();
+	virtual int32 GetSelectedIndex_Implementation() { return -1; }
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	UObject* GetSelectedItem();
+	virtual UObject* GetSelectedItem_Implementation() { return nullptr; }
+
+	/* Returns false if there is no selection. */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	bool GetSelectedItems(TArray<UObject*>& OutItems);
+	virtual bool GetSelectedItems_Implementation(TArray<UObject*>& OutItems) { return false; }
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	bool GetSelectedItems(TArray<UObject*>& Items);
-
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	bool IsSelected(UObject* Item);
+	bool IsSelected(const UObject* InItem) const;
+	virtual bool IsSelected_Implementation(const UObject* InItem) const { return false; }
 };

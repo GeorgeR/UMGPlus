@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "VerticalBox.h"
 
 #include "UMGPWindow.generated.h"
 
@@ -13,11 +14,11 @@ class UMGPLUS_API UUMGPWindow
 public:
 	UUMGPWindow()
 		: bRequiresServerToOpen(false),
-		bCanMove(true),
-		bCanResize(false),
-		bCanClose(true),
-		bCanMinimize(false),
-		bIsModal(false) { }
+		  bCanMove(true),
+		  bCanResize(false),
+		  bCanClose(true),
+		  bCanMinimize(false),
+		  bIsModal(false) { }
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Multiplayer")
 	bool bRequiresServerToOpen;
@@ -37,7 +38,4 @@ public:
 	/* Forces the user to interact with this window and nothing else. */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	bool bIsModal;
-
-protected:
-	virtual TSharedRef<SWidget> RebuildWidget() override;
 };
