@@ -24,6 +24,7 @@ public class UMGPlus : ModuleRules
 				"Core",
 			    "CoreUObject",
 			    "Engine",
+			    "InputCore",
                 "UMG"
             });
 
@@ -38,9 +39,6 @@ public class UMGPlus : ModuleRules
                 "UMG"
 			});
 
-		DynamicallyLoadedModuleNames.AddRange(
-			new string[]
-			{
-			});
+		DynamicallyLoadedModuleNames.AddRange(new string[] { });
 	}
 }
