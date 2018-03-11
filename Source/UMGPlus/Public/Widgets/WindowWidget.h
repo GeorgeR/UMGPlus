@@ -6,8 +6,42 @@
 #include "Widgets/ViewWidget.h"
 #include "Border.h"
 #include "CanvasPanelSlot.h"
+#include "Button.h"
 
 #include "WindowWidget.generated.h"
+
+USTRUCT(BlueprintType)
+struct UMGPLUS_API FWindowParameters
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool bCenterOfScreen;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FIntPoint Position;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FIntPoint Size;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	FText TitleText;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	bool bClampToViewport;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	bool bMoveable;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	bool bResizeable;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	bool bIsCloseable;
+
+	FWindowParameters();
+};
 
 UCLASS(BlueprintType)
 class UMGPLUS_API UWindowWidget
@@ -19,8 +53,11 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UBorder* TitleBorder;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
 	UBorder* ResizeBorder;
+
+	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
+	UButton* CloseButton;
 
 	UPROPERTY(meta = (BindWidget))
 	UNamedSlot* WindowContent;
@@ -41,12 +78,18 @@ public:
 	bool bResizeable;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	bool bIsCloseable;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	FVector2D MinSize;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	FVector2D MaxSize;
 
 	UWindowWidget();
+
+	UFUNCTION(BlueprintCallable, Category = "UMGPlus")
+	void SetParameters(FWindowParameters& InParameters);
 
 protected:
 	void NativeConstruct() override;
@@ -74,10 +117,12 @@ private:
 	inline bool IsMouseInViewport(const FPointerEvent& InPointerEvent);
 	inline FVector2D GetViewportSize();
 	inline float GetViewportScale();
-	inline void GetMouseInViewportSpace(const FPointerEvent& InPointerEvent, FVector2D& OutPixelPosition, FVector2D& OutViewportPosition);
+	inline void GetMouseInViewportSpace(const FPointerEvent& InPointerEvent, FVector2D& OutPixelPosition,
+	                                    FVector2D& OutViewportPosition);
 
 protected:
 	FReply NativeOnFocusReceived(const FGeometry& InGeometry, const FFocusEvent& InFocusEvent) override;
 	void NativeOnFocusLost(const FFocusEvent& InFocusEvent) override;
-	void NativeOnFocusChanging(const FWeakWidgetPath& PreviousFocusPath, const FWidgetPath& NewWidgetPath, const FFocusEvent& InFocusEvent) override;
+	void NativeOnFocusChanging(const FWeakWidgetPath& PreviousFocusPath, const FWidgetPath& NewWidgetPath,
+	                           const FFocusEvent& InFocusEvent) override;
 };

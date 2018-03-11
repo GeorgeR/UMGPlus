@@ -3,11 +3,31 @@
 #include "SlateBlueprintLibrary.h"
 #include "WidgetBlueprintLibrary.h"
 
+FWindowParameters::FWindowParameters()
+{
+	bCenterOfScreen = true;
+	Position = FIntPoint(100, 100);
+	Size = FIntPoint(400, 200);
+
+	bClampToViewport = true;
+	bMoveable = true;
+	bResizeable = true;
+}
+
 UWindowWidget::UWindowWidget()
 {
 	bClampToViewport = true;
 	bMoveable = true;
 	bResizeable = true;
+}
+
+void UWindowWidget::SetParameters(FWindowParameters& InParameters)
+{
+	TitleText = InParameters.TitleText;
+	bClampToViewport = InParameters.bClampToViewport;
+	bMoveable = InParameters.bMoveable;
+	bResizeable = InParameters.bResizeable;
+	bIsCloseable = InParameters.bIsCloseable;
 }
 
 void UWindowWidget::NativeConstruct()

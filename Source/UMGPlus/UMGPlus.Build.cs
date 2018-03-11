@@ -9,13 +9,17 @@ public class UMGPlus : ModuleRules
 		PublicIncludePaths.AddRange(
 			new string[] {
 				"UMGPlus/Public",
-			    "UMGPlus/Public/Interfaces"
+			    "UMGPlus/Public/Components",
+                "UMGPlus/Public/Interfaces",
+			    "UMGPlus/Public/Widgets"
             });
 
 		PrivateIncludePaths.AddRange(
 			new string[] {
 				"UMGPlus/Private",
-			    "UMGPlus/Private/Interfaces",
+			    "UMGPlus/Private/Components",
+                "UMGPlus/Private/Interfaces",
+			    "UMGPlus/Private/Widgets"
             });
 
 		PublicDependencyModuleNames.AddRange(
