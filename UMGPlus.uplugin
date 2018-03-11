@@ -19,10 +19,6 @@
 			"Name": "UMGPlus",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
-		},
-		{
-			"Name": "UMGPlusEditor",
-			"Type": "Editor"
 		}
 	]
 }
