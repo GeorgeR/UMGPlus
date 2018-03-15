@@ -91,6 +91,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UMGPlus")
 	void SetParameters(FWindowParameters& InParameters);
 
+	void Close() override;
+
 protected:
 	void NativeConstruct() override;
 

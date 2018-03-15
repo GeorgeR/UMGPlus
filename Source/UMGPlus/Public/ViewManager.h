@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "UserWidget.h"
 #include "Widgets/WindowWidget.h"
+#include "WindowContainerWidget.h"
 
 #include "ViewManager.generated.h"
 
@@ -55,8 +56,13 @@ private:
 	UPROPERTY(Transient)
 	TMap<UClass*, UUserWidget*> WidgetCache;
 
+	UPROPERTY()
+	TSubclassOf<UWindowContainerWidget> WindowContainerWidgetClass;
+	
 	UFUNCTION(BlueprintCallable, Category = "ViewManager")
 	UUserWidget* GetOrCreateWidget(APlayerController* InController, TSubclassOf<UUserWidget> InWidgetClass);
 
 	static void SetInputMode(APlayerController* InController, EInputMode InInputMode);
+
+	void TrySetContext(UUserWidget* InWidget, UObject* InContext);
 };

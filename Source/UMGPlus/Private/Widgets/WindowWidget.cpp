@@ -30,6 +30,11 @@ void UWindowWidget::SetParameters(FWindowParameters& InParameters)
 	bIsCloseable = InParameters.bIsCloseable;
 }
 
+void UWindowWidget::Close()
+{
+	Super::Close();
+}
+
 void UWindowWidget::NativeConstruct()
 {
 	Super::NativeConstruct();

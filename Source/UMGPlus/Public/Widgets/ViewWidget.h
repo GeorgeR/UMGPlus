@@ -39,7 +39,7 @@ public:
 	void PlayClose();
 
 	UFUNCTION(BlueprintCallable, Category = "UMGPlus")
-	void Close();
+	virtual void Close();
 
 	bool Initialize() override;
 

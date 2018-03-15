@@ -8,6 +8,8 @@ UViewManager* UViewManager::Instance = nullptr;
 UViewManager::UViewManager()
 {
 	Instance = this;
+
+	WindowContainerWidgetClass = LoadClass<UWindowContainerWidget>(this, TEXT("WidgetBlueprint'/UMGPlus/WBP_WindowContainer.WBP_WindowContainer_C'"));
 }
 
 UViewManager* UViewManager::Get()
@@ -25,12 +27,7 @@ UUserWidget* UViewManager::Show(APlayerController* InController, TSubclassOf<UUs
 
 	const auto Widget = GetOrCreateWidget(InController, InWidgetClass);
 
-	if(InContext != nullptr)
-	{
-		const auto HasContext = Cast<IHasContextInterface>(Widget);
-		if (HasContext != nullptr)
-			IHasContextInterface::Execute_SetContext(Widget, InContext);
-	}
+	TrySetContext(Widget, InContext);
 
 	Widget->AddToViewport();
 
@@ -52,14 +49,12 @@ UUserWidget* UViewManager::ShowInSlot(APlayerController* InController, UUserWidg
 
 	const auto Widget = GetOrCreateWidget(InController, InWidgetClass);
 
-	if (InContext != nullptr)
-	{
-		const auto HasContext = Cast<IHasContextInterface>(Widget);
-		if (HasContext != nullptr)
-			IHasContextInterface::Execute_SetContext(Widget, InContext);
-	}
-
+	TrySetContext(Widget, InContext);
+	
 	InParentWidget->SetContentForSlot(InSlotName, Widget);
+
+	SetInputMode(InController, InParameters.InputMode);
+	InController->bShowMouseCursor = InParameters.bShowMouse;
 
 	const auto ViewWidget = Cast<UViewWidget>(Widget);
 	if (ViewWidget != nullptr)
@@ -74,31 +69,29 @@ UUserWidget* UViewManager::ShowWindow(APlayerController* InController, TSubclass
 	check(InWindowClass);
 	check(InContentWidgetClass);
 
+	const auto WindowContainerWidget = Cast<UWindowContainerWidget>(GetOrCreateWidget(InController, WindowContainerWidgetClass));
+
 	const TSubclassOf<UUserWidget> WindowClass = InWindowClass;
 	const auto WindowWidget = Cast<UWindowWidget>(GetOrCreateWidget(InController, WindowClass));
-
+	
 	const auto ContentWidget = ShowInSlot(InController, Cast<UUserWidget>(WindowWidget), InContentWidgetClass, TEXT("WindowContent"), InParameters, InContext);
 
-	if (InContext != nullptr)
-	{
-		const auto HasContext = Cast<IHasContextInterface>(ContentWidget);
-		if (HasContext != nullptr)
-			IHasContextInterface::Execute_SetContext(ContentWidget, InContext);
-	}
-
-	WindowWidget->AddToViewport();
-
+	TrySetContext(ContentWidget, InContext);
+	
+	WindowContainerWidget->AddToViewport();
+	auto Slot = Cast<UCanvasPanelSlot>(WindowContainerWidget->WindowContainerPanel->AddChildToCanvas(WindowWidget));
+	
 	if (!InWindowParameters.bCenterOfScreen)
-		WindowWidget->SetPositionInViewport(InWindowParameters.Position);
+		Slot->SetPosition(InWindowParameters.Position);
 	else
 	{
-		WindowWidget->SetAnchorsInViewport(FAnchors(0.5f, 0.5f, 0.5f, 0.5f));
-		WindowWidget->SetAlignmentInViewport(FVector2D(0.5f, 0.5f));
-		WindowWidget->SetPositionInViewport(FVector2D(0.0f, 0.0f));
+		Slot->SetAnchors(FAnchors(0.5f));
+		Slot->SetAlignment(FVector2D(0.5f, 0.5f));
+		Slot->SetPosition(FVector2D(0.0f, 0.5f));
 	}
 	
-	WindowWidget->SetDesiredSizeInViewport(InWindowParameters.Size);
-
+	Slot->SetSize(InWindowParameters.Size);
+	
 	SetInputMode(InController, InParameters.InputMode);
 	InController->bShowMouseCursor = InParameters.bShowMouse;
 
@@ -145,4 +138,13 @@ void UViewManager::SetInputMode(APlayerController* InController, EInputMode InIn
 		InController->SetInputMode(FInputModeGameOnly());
 		break;
 	}
+}
+
+void UViewManager::TrySetContext(UUserWidget* InWidget, UObject* InContext)
+{
+	if (InContext == nullptr)
+		return;
+
+	if (InWidget->GetClass()->ImplementsInterface(UHasContextInterface::StaticClass()))
+		IHasContextInterface::Execute_SetContext(InWidget, InContext);
 }
