@@ -5,6 +5,12 @@
 
 UViewManager* UViewManager::Instance = nullptr;
 
+FViewParameters::FViewParameters()
+{
+	InputMode = EInputMode::IM_GameAndUI;
+	bShowMouse = false;
+}
+
 UViewManager::UViewManager()
 {
 	Instance = this;

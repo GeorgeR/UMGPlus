@@ -26,6 +26,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool bShowMouse;
+
+	FViewParameters();
 };
 
 /* It's recommended you attach this to GameInstance and call it via Get() */
