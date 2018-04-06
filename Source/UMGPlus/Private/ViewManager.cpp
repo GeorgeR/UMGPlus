@@ -125,6 +125,8 @@ UUserWidget* UViewManager::GetOrCreateWidget(APlayerController* InController, TS
 	const auto Widget = CreateWidget<UUserWidget>(InController, InWidgetClass);
 	WidgetCache.Add(InWidgetClass, Widget);
 
+	check(Widget);
+
 	return Widget;
 }
 

@@ -66,5 +66,5 @@ private:
 
 	static void SetInputMode(APlayerController* InController, EInputMode InInputMode);
 
-	void TrySetContext(UUserWidget* InWidget, UObject* InContext);
+	static void TrySetContext(UUserWidget* InWidget, UObject* InContext);
 };
