@@ -122,7 +122,7 @@ UUserWidget* UViewManager::GetOrCreateWidget(APlayerController* InController, TS
 	if (WidgetCache.Contains(InWidgetClass))
 		return WidgetCache[InWidgetClass];
 
-	const auto Widget = CreateWidget<UUserWidget>(InController, InWidgetClass);
+	const auto Widget = CreateWidget<UUserWidget>(InController->GetWorld(), InWidgetClass);
 	WidgetCache.Add(InWidgetClass, Widget);
 
 	check(Widget);
