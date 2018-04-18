@@ -42,6 +42,14 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "ViewManager")
 	static UViewManager* Get();
+
+	UFUNCTION(BlueprintCallable, Category = "ViewManager")
+	void FadeTo(APlayerController* InController, float InDuration = 3.0f, FLinearColor InColor = FLinearColor::Black, bool bFadeAudio = false, bool bHoldWhenFinished = true);
+	void FadeTo(APlayerController* InController, TFunction<void()> OnComplete, float InDuration = 3.0f, FLinearColor InColor = FLinearColor::Black, bool bFadeAudio = false, bool bHoldWhenFinished = true);
+
+	UFUNCTION(BlueprintCallable, Category = "ViewManager")
+	void FadeFrom(APlayerController* InController, float InDuration = 3.0f, FLinearColor InColor = FLinearColor::Black, bool bFadeAudio = false, bool bHoldWhenFinished = true);
+	void FadeFrom(APlayerController* InController, TFunction<void()> OnComplete, float InDuration = 3.0f, FLinearColor InColor = FLinearColor::Black, bool bFadeAudio = false, bool bHoldWhenFinished = true);
 	
 	UFUNCTION(BlueprintCallable, Category = "ViewManager")
 	UUserWidget* Show(APlayerController* InController, TSubclassOf<UUserWidget> InWidgetClass, FViewParameters InParameters, UObject* InContext = nullptr);
@@ -67,4 +75,7 @@ private:
 	static void SetInputMode(APlayerController* InController, EInputMode InInputMode);
 
 	static void TrySetContext(UUserWidget* InWidget, UObject* InContext);
+
+	TArray<FTimerHandle> TimerHandleCache;
+	FTimerHandle& GetFadeTimerHandle();
 };

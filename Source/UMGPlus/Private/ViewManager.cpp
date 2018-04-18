@@ -2,6 +2,8 @@
 #include "HasContextInterface.h"
 #include "ViewWidget.h"
 #include "WindowWidget.h"
+#include "Engine/World.h"
+#include "TimerManager.h"
 
 UViewManager* UViewManager::Instance = nullptr;
 
@@ -24,6 +26,48 @@ UViewManager* UViewManager::Get()
 		NewObject<UViewManager>();
 	
 	return Instance;
+}
+
+void UViewManager::FadeTo(APlayerController* InController, float InDuration, FLinearColor InColor, bool bFadeAudio, bool bHoldWhenFinished)
+{
+	check(InController);
+	const auto CameraManager = InController->PlayerCameraManager;
+	
+	CameraManager->StartCameraFade(0.0f, 1.0f, InDuration, InColor, bFadeAudio, bHoldWhenFinished);
+}
+
+void UViewManager::FadeTo(APlayerController* InController, TFunction<void()> OnComplete, float InDuration, FLinearColor InColor, bool bFadeAudio, bool bHoldWhenFinished)
+{
+	FadeTo(InController, InDuration, InColor, bFadeAudio, bHoldWhenFinished);
+
+	auto FadeTimer = GetFadeTimerHandle();
+	GetWorld()->GetTimerManager().SetTimer(FadeTimer, [&]()
+	{
+		OnComplete();
+		GetWorld()->GetTimerManager().ClearTimer(FadeTimer);
+		TimerHandleCache.Remove(FadeTimer);
+	}, InDuration, false);
+}
+
+void UViewManager::FadeFrom(APlayerController* InController, float InDuration, FLinearColor InColor, bool bFadeAudio, bool bHoldWhenFinished)
+{
+	check(InController);
+	const auto CameraManager = InController->PlayerCameraManager;
+
+	CameraManager->StartCameraFade(1.0f, 0.0f, InDuration, InColor, bFadeAudio, bHoldWhenFinished);
+}
+
+void UViewManager::FadeFrom(APlayerController* InController, TFunction<void()> OnComplete, float InDuration, FLinearColor InColor, bool bFadeAudio, bool bHoldWhenFinished)
+{
+	FadeFrom(InController, InDuration, InColor, bFadeAudio, bHoldWhenFinished);
+
+	auto FadeTimer = GetFadeTimerHandle();
+	GetWorld()->GetTimerManager().SetTimer(FadeTimer, [&]()
+	{
+		OnComplete();
+		GetWorld()->GetTimerManager().ClearTimer(FadeTimer);
+		TimerHandleCache.Remove(FadeTimer);
+	}, InDuration, false);
 }
 
 UUserWidget* UViewManager::Show(APlayerController* InController, TSubclassOf<UUserWidget> InWidgetClass, FViewParameters InParameters, UObject* InContext)
@@ -155,4 +199,10 @@ void UViewManager::TrySetContext(UUserWidget* InWidget, UObject* InContext)
 
 	if (InWidget->GetClass()->ImplementsInterface(UHasContextInterface::StaticClass()))
 		IHasContextInterface::Execute_SetContext(InWidget, InContext);
+}
+
+FTimerHandle& UViewManager::GetFadeTimerHandle()
+{
+	TimerHandleCache.Add(FTimerHandle());
+	return TimerHandleCache.Last();
 }
