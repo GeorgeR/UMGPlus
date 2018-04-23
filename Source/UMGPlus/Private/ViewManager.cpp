@@ -40,6 +40,8 @@ void UViewManager::FadeTo(APlayerController* InController, TFunction<void()> OnC
 {
 	FadeTo(InController, InDuration, InColor, bFadeAudio, bHoldWhenFinished);
 
+	checkf(GetWorld(), TEXT("Couldn't get world, UViewManager should be attached to something ie. GameInstance"));
+
 	auto FadeTimer = GetFadeTimerHandle();
 	GetWorld()->GetTimerManager().SetTimer(FadeTimer, [&]()
 	{
@@ -61,9 +63,12 @@ void UViewManager::FadeFrom(APlayerController* InController, TFunction<void()> O
 {
 	FadeFrom(InController, InDuration, InColor, bFadeAudio, bHoldWhenFinished);
 
+	checkf(GetWorld(), TEXT("Couldn't get world, UViewManager should be attached to something ie. GameInstance"));
+
 	auto FadeTimer = GetFadeTimerHandle();
 	GetWorld()->GetTimerManager().SetTimer(FadeTimer, [&]()
 	{
+		// BUG: OnComplete is Unset inside this timer
 		OnComplete();
 		GetWorld()->GetTimerManager().ClearTimer(FadeTimer);
 		TimerHandleCache.Remove(FadeTimer);
