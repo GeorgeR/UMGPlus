@@ -80,6 +80,7 @@ UUserWidget* UViewManager::Show(APlayerController* InController, TSubclassOf<UUs
 	check(InController);
 	check(InWidgetClass);
 
+	// BUG: This returns nullptr on second play
 	const auto Widget = GetOrCreateWidget(InController, InWidgetClass);
 
 	TrySetContext(Widget, InContext);
