@@ -27,9 +27,9 @@ public:
 	T* GetContext() const { return Cast<T>(GetContext()); }
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "UMGPlus")
-	void SetContext(UObject* InContext);
-	virtual void SetContext_Implementation(UObject* InContext) { }
+	void SetContext(UObject* Context);
+	virtual void SetContext_Implementation(UObject* Context) { }
 
 	template <typename T>
-	void SetContext(T* InContext) { SetContext(Cast<UObject>(InContext)); }
+	void SetContext(T* Context) { SetContext(Cast<UObject>(Context)); }
 };

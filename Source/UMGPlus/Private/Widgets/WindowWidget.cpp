@@ -12,6 +12,7 @@ FWindowParameters::FWindowParameters()
 	bClampToViewport = true;
 	bMoveable = true;
 	bResizeable = true;
+	bIsCloseable = true;
 }
 
 UWindowWidget::UWindowWidget()

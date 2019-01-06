@@ -2,35 +2,37 @@
 
 #include "CoreMinimal.h"
 #include "UserWidget.h"
+#include "ViewManagerBase.h"
 #include "Widgets/WindowWidget.h"
 #include "WindowContainerWidget.h"
 
 #include "ViewManager.generated.h"
 
-UENUM(BlueprintType)
-enum class EInputMode : uint8
-{
-	IM_UIOnly			UMETA(DisplayName = "UI only"),
-	IM_GameAndUI		UMETA(DisplayName = "Game and UI"),
-	IM_GameOnly			UMETA(DisplayName = "Game only")
-};
-
-USTRUCT(BlueprintType)
-struct UMGPLUS_API FViewParameters
+/* This should be a descendent of your PlayerController */
+UCLASS(BlueprintType, Blueprintable)
+class UMGPLUS_API UViewManager
+	: public UViewManagerBase
 {
 	GENERATED_BODY()
-	
+
 public:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	EInputMode InputMode;
+	UViewManager();
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool bShowMouse;
+public:
+	UFUNCTION(BlueprintCallable, Category = "UMGPlus|ViewManager")
+	virtual void FadeTo(const FFadeParameters& Parameters) override { Super::FadeTo(Parameters); }
 
-	FViewParameters();
+	UFUNCTION(BlueprintCallable, Category = "UMGPlus|ViewManager")
+	virtual void FadeFrom(const FFadeParameters& Parameters) override { Super::FadeTo(Parameters); }
+
+	UFUNCTION(BlueprintCallable, Category = "UMGPlus|ViewManager", meta = (DisplayName = "Show"))
+	virtual UUserWidget* Show_BP(TSubclassOf<UUserWidget> WidgetClass, const FViewParameters& Parameters, const FName& Name = NAME_None, UObject* Context = nullptr);
+
+	UFUNCTION(BlueprintCallable, Category = "UMGPlus|ViewManager", meta = (DisplayName = "Show"))
+	UUserWidget* Show_BP_FromReference(TSoftClassPtr<UUserWidget> WidgetClass, const FViewParameters& Parameters, const FName& Name = NAME_None, UObject* Context = nullptr);
 };
 
-/* It's recommended you attach this to GameInstance and call it via Get() */
+/*
 UCLASS(BlueprintType)
 class UMGPLUS_API UViewManager
 	: public UObject
@@ -40,8 +42,7 @@ class UMGPLUS_API UViewManager
 public:
 	UViewManager();
 
-	UFUNCTION(BlueprintCallable, Category = "ViewManager")
-	static UViewManager* Get();
+
 
 	UFUNCTION(BlueprintCallable, Category = "ViewManager")
 	void FadeTo(APlayerController* InController, float InDuration = 3.0f, FLinearColor InColor = FLinearColor::Black, bool bFadeAudio = false, bool bHoldWhenFinished = true);
@@ -59,18 +60,16 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "ViewManager")
 	UUserWidget* ShowWindow(APlayerController* InController, TSubclassOf<UWindowWidget> InWindowClass, TSubclassOf<UUserWidget> InContentWidgetClass, FViewParameters InParameters, FWindowParameters InWindowParameters, UObject* InContext = nullptr);
-	
-private:
-	static UViewManager* Instance;
 
-	UPROPERTY(Transient)
-	TMap<UClass*, UUserWidget*> WidgetCache;
+private:
+	
+
+
 
 	UPROPERTY()
 	TSubclassOf<UWindowContainerWidget> WindowContainerWidgetClass;
 	
-	UFUNCTION(BlueprintCallable, Category = "ViewManager")
-	UUserWidget* GetOrCreateWidget(APlayerController* InController, TSubclassOf<UUserWidget> InWidgetClass);
+	
 
 	static void SetInputMode(APlayerController* InController, EInputMode InInputMode);
 
@@ -79,3 +78,4 @@ private:
 	TArray<FTimerHandle> TimerHandleCache;
 	FTimerHandle& GetFadeTimerHandle();
 };
+*/
