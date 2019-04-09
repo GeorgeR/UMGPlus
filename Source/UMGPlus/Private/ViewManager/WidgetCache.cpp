@@ -20,8 +20,9 @@ bool FWidgetCacheKey::operator!=(const FWidgetCacheKey& Other) const { return !(
 UUserWidget* FWidgetCache::GetOrCreate(APlayerController* PlayerController, TSubclassOf<UUserWidget> WidgetClass, const FName& Name /*= NAME_None*/)
 {
 	check(PlayerController);
-	check(PlayerController->IsLocalController());
 	check(PlayerController->GetWorld());
+	check(PlayerController->IsLocalController());
+	
 	check(WidgetClass);
 
 	auto CacheKey = FWidgetCacheKey(WidgetClass, Name);
