@@ -2,9 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "UserWidget.h"
+
 #include "ViewManagerBase.h"
 #include "Widgets/WindowWidget.h"
-#include "WindowContainerWidget.h"
+#include "Widgets/WindowContainerWidget.h"
 
 #include "ViewManager.generated.h"
 

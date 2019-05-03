@@ -4,8 +4,9 @@
 #include "Blueprint/UserWidget.h"
 #include "CanvasPanel.h"
 #include "BackgroundBlur.h"
-#include "ViewWidget.h"
 #include "Border.h"
+
+#include "ViewWidget.h"
 
 #include "WindowContainerWidget.generated.h"
 

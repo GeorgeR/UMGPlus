@@ -1,12 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Widgets/ViewWidget.h"
 #include "Border.h"
 #include "CanvasPanelSlot.h"
 #include "Button.h"
+
+#include "Widgets/ViewWidget.h"
 
 #include "WindowWidget.generated.h"
 

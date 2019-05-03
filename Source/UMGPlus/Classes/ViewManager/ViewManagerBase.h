@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "UserWidget.h"
+
 #include "WidgetCache.h"
 
 #include "ViewManagerBase.generated.h"
