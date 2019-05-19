@@ -1,9 +1,10 @@
-#include "ViewManagerBase.h"
+#include "ViewManager/ViewManagerBase.h"
 
-#include "HasContextInterface.h"
-#include "ViewWidget.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
+
+#include "Interfaces/HasContextInterface.h"
+#include "Widgets/ViewWidget.h"
 
 FViewParameters::FViewParameters()
 {

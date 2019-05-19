@@ -1,4 +1,5 @@
-#include "ViewWidget.h"
+#include "Widgets/ViewWidget.h"
+
 #include "WidgetAnimation.h"
 #include "MovieScene.h"
 #include "WidgetTree.h"

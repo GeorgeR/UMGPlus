@@ -1,9 +1,11 @@
-#include "ViewManager.h"
-#include "HasContextInterface.h"
-#include "ViewWidget.h"
-#include "WindowWidget.h"
+#include "ViewManager/ViewManager.h"
+
 #include "Engine/World.h"
 #include "TimerManager.h"
+
+#include "Interfaces/HasContextInterface.h"
+#include "Widgets/ViewWidget.h"
+#include "Widgets/WindowWidget.h"
 
 UViewManager::UViewManager()
 {
