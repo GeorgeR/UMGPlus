@@ -149,31 +149,31 @@ void UViewManagerBase::Close<TSoftClassPtr<UUserWidget>>(TSoftClassPtr<UUserWidg
 }
 #pragma endregion Close
 
-UWorld* UViewManagerBase::GetWorld() const
-{
-	return PlayerController->GetWorld();
-}
+//UWorld* UViewManagerBase::GetWorld() const
+//{
+//	return PlayerController->GetWorld();
+//}
 
 APlayerController* UViewManagerBase::GetPlayerController()
 {
-	if (PlayerController != nullptr)
-		return PlayerController;
+	if (this->PlayerController != nullptr)
+		return this->PlayerController;
 
 	/* Walk up the tree to find player controller */
 	auto Outer = GetOuter();
 	while (Outer != nullptr)
 	{
-		auto ParentAsPlayerController = Cast<APlayerController>(Outer);
-		if (ParentAsPlayerController != nullptr)
+		auto OuterPlayerController = Cast<APlayerController>(Outer);
+		if (OuterPlayerController != nullptr)
 		{
-			PlayerController = ParentAsPlayerController;
-			return PlayerController;
+			this->PlayerController = OuterPlayerController;
+			return this->PlayerController;
 		}
 		else
 			Outer = Outer->GetOuter();
 	}
 
-	// TODO: Error
+	// #todo Error
 	return nullptr;
 }
 
@@ -185,19 +185,19 @@ FTimerHandle& UViewManagerBase::GetFadeTimerHandle()
 
 void UViewManagerBase::SetInputMode(EInputMode InputMode)
 {
-	auto _PlayerController = GetPlayerController();
+	auto OwningPlayerController = GetPlayerController();
 	switch (InputMode)
 	{
 	case EInputMode::IM_UIOnly:
-		_PlayerController->SetInputMode(FInputModeUIOnly());
+		OwningPlayerController->SetInputMode(FInputModeUIOnly());
 		break;
 
 	case EInputMode::IM_GameAndUI:
-		_PlayerController->SetInputMode(FInputModeGameAndUI());
+		OwningPlayerController->SetInputMode(FInputModeGameAndUI());
 		break;
 
 	case EInputMode::IM_GameOnly:
-		_PlayerController->SetInputMode(FInputModeGameOnly());
+		OwningPlayerController->SetInputMode(FInputModeGameOnly());
 		break;
 	}
 }

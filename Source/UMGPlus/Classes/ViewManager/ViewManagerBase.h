@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/ActorComponent.h"
 #include "UserWidget.h"
 
 #include "WidgetCache.h"
@@ -72,7 +73,7 @@ public:
 
 UCLASS(Abstract, MinimalAPI)
 class UViewManagerBase
-	: public UObject
+	: public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -105,7 +106,7 @@ public:
 	//FORCEINLINE TWidget* Show(FViewParameters Parameters, TContext* Context);
 
 public:
-	UWorld* GetWorld() const override;
+	//UWorld* GetWorld() const override;
 
 protected:
 	UPROPERTY(BlueprintReadWrite)

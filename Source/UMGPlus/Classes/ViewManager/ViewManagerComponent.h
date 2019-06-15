@@ -7,17 +7,17 @@
 #include "Widgets/WindowWidget.h"
 #include "Widgets/WindowContainerWidget.h"
 
-#include "ViewManager.generated.h"
+#include "ViewManagerComponent.generated.h"
 
 /* This should be a descendent of your PlayerController */
 UCLASS(BlueprintType, Blueprintable)
-class UMGPLUS_API UViewManager
+class UMGPLUS_API UViewManagerComponent
 	: public UViewManagerBase
 {
 	GENERATED_BODY()
 
 public:
-	UViewManager();
+	UViewManagerComponent();
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "UMGPlus|ViewManager")
