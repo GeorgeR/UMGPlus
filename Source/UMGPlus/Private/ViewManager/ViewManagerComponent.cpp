@@ -1,4 +1,4 @@
-#include "ViewManager/ViewManager.h"
+#include "ViewManager/ViewManagerComponent.h"
 
 #include "Engine/World.h"
 #include "TimerManager.h"
@@ -7,17 +7,17 @@
 #include "Widgets/ViewWidget.h"
 #include "Widgets/WindowWidget.h"
 
-UViewManager::UViewManager()
+UViewManagerComponent::UViewManagerComponent()
 {
 	//WindowContainerWidgetClass = LoadClass<UWindowContainerWidget>(this, TEXT("WidgetBlueprint'/UMGPlus/WBP_WindowContainer.WBP_WindowContainer_C'"));
 }
 
-UUserWidget* UViewManager::Show_BP(TSubclassOf<UUserWidget> WidgetClass, const FViewParameters& Parameters, const FName& Name, UObject* Context /*= nullptr*/)
+UUserWidget* UViewManagerComponent::Show_BP(TSubclassOf<UUserWidget> WidgetClass, const FViewParameters& Parameters, const FName& Name, UObject* Context /*= nullptr*/)
 {
 	return Super::Show(WidgetClass, Parameters, Name, Context);
 }
 
-UUserWidget* UViewManager::Show_BP_FromReference(TSoftClassPtr<UUserWidget> WidgetClass, const FViewParameters& Parameters, const FName& Name, UObject* Context /*= nullptr*/)
+UUserWidget* UViewManagerComponent::Show_BP_FromReference(TSoftClassPtr<UUserWidget> WidgetClass, const FViewParameters& Parameters, const FName& Name, UObject* Context /*= nullptr*/)
 {
 	return Super::Show(WidgetClass, Parameters, Name, Context);
 }

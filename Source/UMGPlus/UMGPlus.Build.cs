@@ -32,7 +32,9 @@ public class UMGPlus : ModuleRules
 			    "CoreUObject",
 			    "Engine",
 			    "InputCore",
-                "UMG"
+                "UMG",
+
+                "StructBox",
             });
 
 		PrivateDependencyModuleNames.AddRange(
@@ -43,7 +45,9 @@ public class UMGPlus : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-                "UMG"
-			});
+                "UMG",
+
+                "StructBox",
+            });
 	}
 }
