@@ -132,7 +132,13 @@ void UViewManagerBase::Close<UClass*>(UClass* WidgetClass, const FName& Name)
 
 	UUserWidget* Widget = nullptr;
 	if (WidgetCache.TryGet(WidgetClass, Widget, Name))
-		Widget->RemoveFromParent();
+	{
+		const auto ViewWidget = Cast<UViewWidget>(Widget);
+		if (ViewWidget != nullptr)
+			ViewWidget->Close();
+		else
+		    Widget->RemoveFromParent();
+	}
 }
 
 template <>

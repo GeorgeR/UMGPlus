@@ -19,8 +19,7 @@ public:
 	FName Name;
 
 	FWidgetCacheKey();
-
-	FWidgetCacheKey(UClass* Class, const FName& Name = NAME_None);
+    explicit FWidgetCacheKey(TSubclassOf<UUserWidget> InWidgetClass, const FName& InInstanceName = NAME_None);
 
 	bool operator==(const FWidgetCacheKey& Other) const;
 	bool operator!=(const FWidgetCacheKey& Other) const;
@@ -42,12 +41,12 @@ struct FWidgetCache
 	GENERATED_BODY()
 
 public:
-	UUserWidget* GetOrCreate(APlayerController* PlayerController, TSubclassOf<UUserWidget> WidgetClass, const FName& Name = NAME_None);
-	bool TryGet(TSubclassOf<UUserWidget> WidgetClass, UUserWidget* Widget, const FName& Name = NAME_None);
+	UUserWidget* GetOrCreate(APlayerController* InPlayerController, TSubclassOf<UUserWidget> InWidgetClass, const FName& InInstanceName = NAME_None);
+	bool TryGet(TSubclassOf<UUserWidget> InWidgetClass, UUserWidget*& OutWidget, const FName& InInstanceName = NAME_None);
 
 private:
 	UPROPERTY()
 	TMap<FWidgetCacheKey, UUserWidget*> Items;
 
-	bool TryGet(const FWidgetCacheKey& CacheKey, UUserWidget* Widget);
+	bool TryGet(const FWidgetCacheKey& InCacheKey, UUserWidget*& OutWidget);
 };

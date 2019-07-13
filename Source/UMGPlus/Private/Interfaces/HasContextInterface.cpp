@@ -1,28 +1,28 @@
-#include "Interfaces/HasContextInterface.h"
-
-#include "Kismet/KismetSystemLibrary.h"
-
+//#include "Interfaces/HasContextInterface.h"
+//
+//#include "Kismet/KismetSystemLibrary.h"
+//
 //DEFINE_FUNCTION(IHasContextInterface::execGetContext_Struct)
 //{
-//	auto Self = P_THIS_OBJECT;
-//	UStructProperty* SrcContextProperty = FindField<UStructProperty>(Self->GetClass(), TEXT("Context"));
+//    const auto Self = P_THIS_OBJECT;
+//    const auto SrcContextProperty = FindField<UStructProperty>(Self->GetClass(), TEXT("Context"));
 //	
 //	Stack.MostRecentPropertyAddress = nullptr;
 //	Stack.MostRecentProperty = nullptr;
 //
 //	Stack.StepCompiledIn<UStructProperty>(nullptr);
-//	void* DstContextAddr = Stack.MostRecentPropertyAddress;
-//	auto DstContextProperty = Cast<UStructProperty>(Stack.MostRecentProperty);
+//	void* DstContextAddress = Stack.MostRecentPropertyAddress;
+//    const auto DstContextProperty = Cast<UStructProperty>(Stack.MostRecentProperty);
 //
-//	bool bResult = false;
-//	UScriptStruct* SrcContext = SrcContextProperty->Struct;
-//	uint8* SrcContextData = (uint8*)FMemory::Malloc(SrcContext->GetStructureSize());
+//    auto bResult = false;
+//    const auto SrcContext = SrcContextProperty->Struct;
+//    const auto SrcContextData = StaticCast<uint8*>(FMemory::Malloc(SrcContext->GetStructureSize()));
 //	SrcContext->InitializeStruct(SrcContextData);
-//	if (DstContextAddr && DstContextProperty && SrcContext != nullptr)
+//	if (DstContextAddress && DstContextProperty && SrcContext != nullptr)
 //	{
 //		if(SrcContext == DstContextProperty->Struct)
 //		{
-//			SrcContext->CopyScriptStruct(DstContextAddr, SrcContextData);
+//			SrcContext->CopyScriptStruct(DstContextAddress, SrcContextData);
 //			bResult = true;
 //		}
 //	}
@@ -34,7 +34,7 @@
 //	//bResult = P_THIS->GetContext_Struct_Implementation(Z_Param_Context);
 //	//P_NATIVE_END;
 //
-//	*(bool*)RESULT_PARAM = bResult;
+//	*StaticCast<bool*>(RESULT_PARAM) = bResult;
 //}
 //
 //DEFINE_FUNCTION(IHasContextInterface::execSetContext_Struct)
@@ -43,8 +43,8 @@
 //	Stack.MostRecentProperty = nullptr;
 //
 //	Stack.StepCompiledIn<UStructProperty>(nullptr);
-//	void* SrcContextAddr = Stack.MostRecentPropertyAddress;
-//	auto SrcContextProperty = Cast<UStructProperty>(Stack.MostRecentProperty);
+//	void* SrcContextAddress = Stack.MostRecentPropertyAddress;
+//    const auto SrcContextProperty = Cast<UStructProperty>(Stack.MostRecentProperty);
 //
 //	UScriptStruct* DstContext = nullptr;
 //	uint8* DstContextData = nullptr;
@@ -53,10 +53,10 @@
 //	if (DstContext != nullptr)
 //		DstContext->DestroyStruct(DstContextData);
 //
-//	if (SrcContextAddr && SrcContextProperty)
+//	if (SrcContextAddress && SrcContextProperty)
 //	{
 //		DstContext = SrcContextProperty->Struct;
-//		DstContext->CopyScriptStruct(DstContextData, SrcContextAddr);
+//		DstContext->CopyScriptStruct(DstContextData, SrcContextAddress);
 //	}
 //
 //	P_FINISH;

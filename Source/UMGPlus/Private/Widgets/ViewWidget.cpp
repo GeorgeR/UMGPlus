@@ -41,22 +41,26 @@ void UViewWidget::Close()
 	GetTimerManager().ClearTimer(IdleHandle);
 	GetTimerManager().ClearTimer(CloseHandle);
 
-	auto AnimationDuration = 0.0f;
-	GetCloseDuration(AnimationDuration);
-	this->PlayClose();
 	auto PlayerController = GetWorld()->GetGameInstance()->GetFirstLocalPlayerController();
-	if(PlayerController != nullptr)
+	if (PlayerController != nullptr)
 	{
 		PlayerController->SetInputMode(FInputModeGameOnly());
 		PlayerController->bShowMouseCursor = false;
 	}
 
-	GetTimerManager().SetTimer(CloseHandle, [&]() -> void {
-		GetTimerManager().ClearTimer(CloseHandle);
+	auto AnimationDuration = 0.0f;
+	if (GetCloseDuration(AnimationDuration))
+	{
+		this->PlayClose();
+		GetTimerManager().SetTimer(CloseHandle, [&]() -> void {
+			GetTimerManager().ClearTimer(CloseHandle);
+			RemoveFromParent();
+			if (OnClose.IsBound())
+				OnClose.Broadcast();
+		}, AnimationDuration, false);
+	}
+	else
 		RemoveFromParent();
-		if (OnClose.IsBound())
-			OnClose.Broadcast();
-	}, AnimationDuration, false);
 }
 
 bool UViewWidget::Initialize()

@@ -6,31 +6,31 @@ FWidgetCacheKey::FWidgetCacheKey()
 	: Class(nullptr),
 	Name(NAME_None) { }
 
-FWidgetCacheKey::FWidgetCacheKey(UClass* Class, const FName& Name /*= NAME_None*/)
-	: Class(Class),
-	Name(Name)
+FWidgetCacheKey::FWidgetCacheKey(const TSubclassOf<UUserWidget> InWidgetClass, const FName& InInstanceName /*= NAME_None*/)
+	: Class(InWidgetClass),
+	Name(InInstanceName)
 {
-	if (!Class->IsChildOf(UUserWidget::StaticClass()))
-		CastLogError(*Class->GetFullName(), *UUserWidget::StaticClass()->GetFullName());
+	if (!InWidgetClass->IsChildOf(UUserWidget::StaticClass()))
+		CastLogError(*InWidgetClass->GetFullName(), *UUserWidget::StaticClass()->GetFullName());
 }
 
 bool FWidgetCacheKey::operator==(const FWidgetCacheKey& Other) const { return Class == Other.Class; }
 bool FWidgetCacheKey::operator!=(const FWidgetCacheKey& Other) const { return !(*this == Other); }
 
-UUserWidget* FWidgetCache::GetOrCreate(APlayerController* PlayerController, TSubclassOf<UUserWidget> WidgetClass, const FName& Name /*= NAME_None*/)
+UUserWidget* FWidgetCache::GetOrCreate(APlayerController* InPlayerController, const TSubclassOf<UUserWidget> InWidgetClass, const FName& InInstanceName /*= NAME_None*/)
 {
-	check(PlayerController);
-	check(PlayerController != PlayerController->GetClass()->ClassDefaultObject);
-	check(PlayerController->GetWorld());
-	check(PlayerController->IsLocalController());
+	check(InPlayerController);
+	check(InPlayerController != InPlayerController->GetClass()->ClassDefaultObject);
+	check(InPlayerController->GetWorld());
+	check(InPlayerController->IsLocalController());
 	
-	check(WidgetClass);
+	check(InWidgetClass);
 
-	auto CacheKey = FWidgetCacheKey(WidgetClass, Name);
+    const auto CacheKey = FWidgetCacheKey(InWidgetClass, InInstanceName);
 	UUserWidget* Widget = nullptr;
 	if (!TryGet(CacheKey, Widget))
 	{
-		Widget = CreateWidget<UUserWidget>(PlayerController->GetWorld(), WidgetClass);
+		Widget = CreateWidget<UUserWidget>(InPlayerController->GetWorld(), InWidgetClass);
 		Items.Add(CacheKey, Widget);
 		check(Widget);
 	}
@@ -38,23 +38,23 @@ UUserWidget* FWidgetCache::GetOrCreate(APlayerController* PlayerController, TSub
 	return Widget;
 }
 
-bool FWidgetCache::TryGet(TSubclassOf<UUserWidget> WidgetClass, UUserWidget* Widget, const FName& Name /*= NAME_None*/)
+bool FWidgetCache::TryGet(const TSubclassOf<UUserWidget> InWidgetClass, UUserWidget*& OutWidget, const FName& InInstanceName /*= NAME_None*/)
 {
-	auto CacheKey = FWidgetCacheKey(WidgetClass, Name);
-	return TryGet(CacheKey, Widget);
+    const auto CacheKey = FWidgetCacheKey(InWidgetClass, InInstanceName);
+	return TryGet(CacheKey, OutWidget);
 }
 
-bool FWidgetCache::TryGet(const FWidgetCacheKey& CacheKey, UUserWidget* Widget)
+bool FWidgetCache::TryGet(const FWidgetCacheKey& InCacheKey, UUserWidget*& OutWidget)
 {
-	if (Items.Contains(CacheKey))
+	if (Items.Contains(InCacheKey))
 	{
-		if (Items[CacheKey] == nullptr)
+		if (Items[InCacheKey] == nullptr)
 		{
-			Items.Remove(CacheKey);
+			Items.Remove(InCacheKey);
 			return false;
 		}
 
-		Widget = Items[CacheKey];
+		OutWidget = Items[InCacheKey];
 		return true;
 	}
 
