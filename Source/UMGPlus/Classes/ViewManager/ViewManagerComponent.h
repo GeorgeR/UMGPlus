@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UserWidget.h"
+#include "Blueprint/UserWidget.h"
 
 #include "ViewManagerBase.h"
 #include "Widgets/WindowWidget.h"

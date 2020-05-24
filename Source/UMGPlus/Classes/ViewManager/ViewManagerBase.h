@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "UserWidget.h"
+#include "Blueprint/UserWidget.h"
 
 #include "WidgetCache.h"
 
@@ -62,17 +62,17 @@ public:
 
 /* Seperate because a specialization can't have default args */
 #define DECLARE_SPECIALIZATIONS(ReturnType, Name, ...)																			\
-	template <> UMGPLUS_API ReturnType Name<UClass*>(UClass* WidgetClass, __VA_ARGS__);										\
-	template <> UMGPLUS_API ReturnType Name<TSubclassOf<UUserWidget>>(TSubclassOf<UUserWidget> WidgetClass, __VA_ARGS__);		\
-	template <> UMGPLUS_API ReturnType Name<TSoftClassPtr<UUserWidget>>(TSoftClassPtr<UUserWidget> WidgetClass, __VA_ARGS__);
+	template <> ReturnType Name<UClass*>(UClass* WidgetClass, __VA_ARGS__);										\
+	template <> ReturnType Name<TSubclassOf<UUserWidget>>(TSubclassOf<UUserWidget> WidgetClass, __VA_ARGS__);		\
+	template <> ReturnType Name<TSoftClassPtr<UUserWidget>>(TSoftClassPtr<UUserWidget> WidgetClass, __VA_ARGS__);
 
 #define DECLARE_SPECIALIZATIONS_NO_PARAMS(ReturnType, Name)																		\
-	template <> UMGPLUS_API ReturnType Name<UClass*>(UClass* WidgetClass);													\
-	template <> UMGPLUS_API ReturnType Name<TSubclassOf<UUserWidget>>(TSubclassOf<UUserWidget> WidgetClass);					\
-	template <> UMGPLUS_API ReturnType Name<TSoftClassPtr<UUserWidget>>(TSoftClassPtr<UUserWidget> WidgetClass);
+	template <> ReturnType Name<UClass*>(UClass* WidgetClass);													\
+	template <> ReturnType Name<TSubclassOf<UUserWidget>>(TSubclassOf<UUserWidget> WidgetClass);					\
+	template <> ReturnType Name<TSoftClassPtr<UUserWidget>>(TSoftClassPtr<UUserWidget> WidgetClass);
 
-UCLASS(Abstract, MinimalAPI)
-class UViewManagerBase
+UCLASS(Abstract)
+class UMGPLUS_API UViewManagerBase
 	: public UActorComponent
 {
 	GENERATED_BODY()
@@ -105,6 +105,10 @@ public:
 	//template <typename TWidget, typename TContext>
 	//FORCEINLINE TWidget* Show(FViewParameters Parameters, TContext* Context);
 
+private:
+    UUserWidget* ShowInternal(UClass* WidgetClass, const FViewParameters& ViewParameters, const FName& Name = NAME_None, UObject* Context = nullptr);
+	void CloseInternal(UClass* WidgetClass, const FName& Name);
+
 public:
 	//UWorld* GetWorld() const override;
 
@@ -123,10 +127,10 @@ protected:
 	FTimerHandle& GetFadeTimerHandle();
 
 	void SetInputMode(EInputMode InputMode);
-	void TrySetContext(UUserWidget* Widget, UObject* Context);
+	void TrySetContext(UUserWidget* Widget, UObject* Context) const;
 
 private:
-	bool ClassIsWidget(UClass* Class) const;
+    static bool CheckClassIsWidget(UClass* Class);
 };
 
 //template <typename TWidget>
@@ -140,6 +144,70 @@ private:
 //{
 //	return Cast<TWidget>(Show(TWidget::StaticClass(), Parameters, Context));
 //}
+//
+
+#pragma region Show
+template <>
+inline UUserWidget* UViewManagerBase::Show<UClass*>(UClass* WidgetClass, const FName& Name, UObject* Context /*= nullptr*/)
+{
+    const FViewParameters ViewParameters;
+	return Show(WidgetClass, ViewParameters, Name, Context);
+}
+
+template <>
+inline UUserWidget* UViewManagerBase::Show<TSubclassOf<UUserWidget>>(TSubclassOf<UUserWidget> WidgetClass, const FName& Name, UObject* Context /*= nullptr*/)
+{
+    static const FViewParameters ViewParameters;
+	return Show(WidgetClass, ViewParameters, Name, Context);
+}
+
+template <>
+inline UUserWidget* UViewManagerBase::Show<TSoftClassPtr<UUserWidget>>(TSoftClassPtr<UUserWidget> WidgetClass, const FName& Name, UObject* Context /*= nullptr*/)
+{
+    static const FViewParameters ViewParameters;
+	return Show(WidgetClass, ViewParameters, Name, Context);
+}
+
+template <>
+inline UUserWidget* UViewManagerBase::Show<UClass*>(UClass* WidgetClass, const FViewParameters& ViewParameters, const FName& Name, UObject* Context /*= nullptr*/)
+{
+	return ShowInternal(WidgetClass, ViewParameters, Name, Context);
+}
+
+template <>
+inline UUserWidget* UViewManagerBase::Show<TSubclassOf<UUserWidget>>(TSubclassOf<UUserWidget> WidgetClass, const FViewParameters& ViewParameters, const FName& Name, UObject* Context /*= nullptr*/)
+{
+	return Show(WidgetClass.Get(), ViewParameters, Name, Context);
+}
+
+template <>
+inline UUserWidget* UViewManagerBase::Show<TSoftClassPtr<UUserWidget>>(TSoftClassPtr<UUserWidget> WidgetClass, const FViewParameters& ViewParameters, const FName& Name, UObject* Context /*= nullptr*/)
+{
+    const auto ResolvedClass = WidgetClass.LoadSynchronous();
+	return Show(ResolvedClass, ViewParameters, Name, Context);
+}
+#pragma endregion Show
+
+#pragma region Close
+template <>
+inline void UViewManagerBase::Close<UClass*>(UClass* WidgetClass, const FName& Name)
+{
+	CloseInternal(WidgetClass, Name);
+}
+
+template <>
+inline void UViewManagerBase::Close<TSubclassOf<UUserWidget>>(TSubclassOf<UUserWidget> WidgetClass, const FName& Name)
+{
+	return Close(WidgetClass.Get(), Name);
+}
+
+template <>
+inline void UViewManagerBase::Close<TSoftClassPtr<UUserWidget>>(TSoftClassPtr<UUserWidget> WidgetClass, const FName& Name)
+{
+    const auto ResolvedClass = WidgetClass.LoadSynchronous();
+	return Close(ResolvedClass, Name);
+}
+#pragma endregion Close
 
 #undef DECLARE_FUNC
 #undef DECLARE_FUNC_NO_PARAMS

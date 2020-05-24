@@ -1,11 +1,10 @@
-// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ModuleManager.h"
+#include "Modules/ModuleManager.h"
 
-class FUMGPlusModule : public IModuleInterface
+class FUMGPlusModule
+    : public IModuleInterface
 {
 public:
 

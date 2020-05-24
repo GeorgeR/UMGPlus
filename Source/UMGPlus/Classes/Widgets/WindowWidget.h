@@ -1,9 +1,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Border.h"
-#include "CanvasPanelSlot.h"
-#include "Button.h"
+#include "Components/Border.h"
+#include "Components/CanvasPanelSlot.h"
+#include "Components/Button.h"
 
 #include "Widgets/ViewWidget.h"
 

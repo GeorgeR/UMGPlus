@@ -1,8 +1,8 @@
 #include "Widgets/WindowWidget.h"
 
-#include "WidgetLayoutLibrary.h"
-#include "SlateBlueprintLibrary.h"
-#include "WidgetBlueprintLibrary.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+#include "Blueprint/SlateBlueprintLibrary.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 FWindowParameters::FWindowParameters()
 {

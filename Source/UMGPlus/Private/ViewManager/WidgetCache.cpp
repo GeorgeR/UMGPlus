@@ -1,6 +1,6 @@
-#include "WidgetCache.h"
+#include "ViewManager/WidgetCache.h"
 
-#include "UserWidget.h"
+#include "Blueprint/UserWidget.h"
 
 FWidgetCacheKey::FWidgetCacheKey()
 	: Class(nullptr),

@@ -2,11 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "CanvasPanel.h"
-#include "BackgroundBlur.h"
-#include "Border.h"
+#include "Components/CanvasPanel.h"
+#include "Components/BackgroundBlur.h"
+#include "Components/Border.h"
 
-#include "ViewWidget.h"
+#include "Widgets/ViewWidget.h"
 
 #include "WindowContainerWidget.generated.h"
 

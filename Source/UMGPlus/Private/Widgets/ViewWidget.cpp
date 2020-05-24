@@ -1,8 +1,8 @@
 #include "Widgets/ViewWidget.h"
 
-#include "WidgetAnimation.h"
+//#include "WidgetAnimation.h"
 #include "MovieScene.h"
-#include "WidgetTree.h"
+#include "Blueprint/WidgetTree.h"
 #include "TimerManager.h"
 
 void UViewWidget::PlayShow()

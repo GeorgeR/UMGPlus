@@ -63,34 +63,15 @@ void UViewManagerBase::FadeFrom(const FFadeParameters& Parameters, TFunction<voi
 	}, Parameters.Duration, false);
 }
 
-#pragma region Show
-template <>
-UUserWidget* UViewManagerBase::Show<UClass*>(UClass* WidgetClass, const FName& Name, UObject* Context /*= nullptr*/)
-{
-	FViewParameters ViewParameters;
-	return Show(WidgetClass, ViewParameters, Name, Context);
-}
+//UWorld* UViewManagerBase::GetWorld() const
+//{
+//	return PlayerController->GetWorld();
+//}
 
-template <>
-UUserWidget* UViewManagerBase::Show<TSubclassOf<UUserWidget>>(TSubclassOf<UUserWidget> WidgetClass, const FName& Name, UObject* Context /*= nullptr*/)
+UUserWidget* UViewManagerBase::ShowInternal(UClass* WidgetClass, const FViewParameters& ViewParameters, const FName& Name, UObject* Context)
 {
-	FViewParameters ViewParameters;
-	return Show(WidgetClass, ViewParameters, Name, Context);
-}
-
-template <>
-UUserWidget* UViewManagerBase::Show<TSoftClassPtr<UUserWidget>>(TSoftClassPtr<UUserWidget> WidgetClass, const FName& Name, UObject* Context /*= nullptr*/)
-{
-	FViewParameters ViewParameters;
-	return Show(WidgetClass, ViewParameters, Name, Context);
-}
-
-template <>
-UUserWidget* UViewManagerBase::Show<UClass*>(UClass* WidgetClass, const FViewParameters& ViewParameters, const FName& Name, UObject* Context /*= nullptr*/)
-{
-	check(WidgetClass);
-
-	ClassIsWidget(WidgetClass);
+	ensure(WidgetClass);
+	CheckClassIsWidget(WidgetClass);
 
 	const auto Widget = WidgetCache.GetOrCreate(GetPlayerController(), WidgetClass, Name);
 	if (Context != nullptr)
@@ -108,27 +89,11 @@ UUserWidget* UViewManagerBase::Show<UClass*>(UClass* WidgetClass, const FViewPar
 	return Widget;
 }
 
-template <>
-UUserWidget* UViewManagerBase::Show<TSubclassOf<UUserWidget>>(TSubclassOf<UUserWidget> WidgetClass, const FViewParameters& ViewParameters, const FName& Name, UObject* Context /*= nullptr*/)
-{
-	return Show(WidgetClass.Get(), ViewParameters, Name, Context);
-}
-
-template <>
-UUserWidget* UViewManagerBase::Show<TSoftClassPtr<UUserWidget>>(TSoftClassPtr<UUserWidget> WidgetClass, const FViewParameters& ViewParameters, const FName& Name, UObject* Context /*= nullptr*/)
-{
-	auto ResolvedClass = WidgetClass.LoadSynchronous();
-	return Show(ResolvedClass, ViewParameters, Name, Context);
-}
-#pragma endregion Show
-
-#pragma region Close
-template <>
-void UViewManagerBase::Close<UClass*>(UClass* WidgetClass, const FName& Name)
+void UViewManagerBase::CloseInternal(UClass* WidgetClass, const FName& Name)
 {
 	check(WidgetClass);
 
-	ClassIsWidget(WidgetClass);
+	CheckClassIsWidget(WidgetClass);
 
 	UUserWidget* Widget = nullptr;
 	if (WidgetCache.TryGet(WidgetClass, Widget, Name))
@@ -140,25 +105,6 @@ void UViewManagerBase::Close<UClass*>(UClass* WidgetClass, const FName& Name)
 		    Widget->RemoveFromParent();
 	}
 }
-
-template <>
-void UViewManagerBase::Close<TSubclassOf<UUserWidget>>(TSubclassOf<UUserWidget> WidgetClass, const FName& Name)
-{
-	return Close(WidgetClass.Get(), Name);
-}
-
-template <>
-void UViewManagerBase::Close<TSoftClassPtr<UUserWidget>>(TSoftClassPtr<UUserWidget> WidgetClass, const FName& Name)
-{
-	auto ResolvedClass = WidgetClass.LoadSynchronous();
-	return Close(ResolvedClass, Name);
-}
-#pragma endregion Close
-
-//UWorld* UViewManagerBase::GetWorld() const
-//{
-//	return PlayerController->GetWorld();
-//}
 
 APlayerController* UViewManagerBase::GetPlayerController()
 {
@@ -208,7 +154,7 @@ void UViewManagerBase::SetInputMode(EInputMode InputMode)
 	}
 }
 
-void UViewManagerBase::TrySetContext(UUserWidget* Widget, UObject* Context)
+void UViewManagerBase::TrySetContext(UUserWidget* Widget, UObject* Context) const
 {
 	check(Context);
 
@@ -219,7 +165,7 @@ void UViewManagerBase::TrySetContext(UUserWidget* Widget, UObject* Context)
 	}
 }
 
-bool UViewManagerBase::ClassIsWidget(UClass* Class) const
+bool UViewManagerBase::CheckClassIsWidget(UClass* Class)
 {
 	auto Result = false;
 
