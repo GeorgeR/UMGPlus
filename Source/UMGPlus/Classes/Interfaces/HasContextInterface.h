@@ -15,37 +15,37 @@ namespace UMGPlus
 		class FStructHelpers
 		{
 		public:
-			static void ParseProperty(UProperty* Property, void* ValuePtr)
+			static void ParseProperty(FProperty* Property, void* ValuePtr)
 			{
-                if (const auto NumericProperty = Cast<UNumericProperty>(Property))
+                if (const auto NumericProperty = CastField<FNumericProperty>(Property))
 				{
 					if (NumericProperty->IsFloatingPoint())
 						float FloatValue = NumericProperty->GetFloatingPointPropertyValue(ValuePtr);
 					else if (NumericProperty->IsInteger())
 						int32 IntValue = NumericProperty->GetSignedIntPropertyValue(ValuePtr);
 				}
-				else if (const auto BoolProperty = Cast<UBoolProperty>(Property))
+				else if (const auto BoolProperty = CastField<FBoolProperty>(Property))
                     auto BoolValue = BoolProperty->GetPropertyValue(ValuePtr);
-				else if (auto NameProperty = Cast<UNameProperty>(Property))
+				else if (auto NameProperty = CastField<FNameProperty>(Property))
                     auto NameValue = NameProperty->GetPropertyValue(ValuePtr);
-				else if (auto StringProperty = Cast<UStrProperty>(Property))
+				else if (auto StringProperty = CastField<FStrProperty>(Property))
                     auto StringValue = StringProperty->GetPropertyValue(ValuePtr);
-				else if (auto TextProperty = Cast<UTextProperty>(Property))
+				else if (auto TextProperty = CastField<FTextProperty>(Property))
 					FText TextValue = TextProperty->GetPropertyValue(ValuePtr);
-				else if (const auto ArrayProperty = Cast<UArrayProperty>(Property))
+				else if (const auto ArrayProperty = CastField<FArrayProperty>(Property))
 				{
 					FScriptArrayHelper Helper(ArrayProperty, ValuePtr);
 					for (auto i = 0, n = Helper.Num(); i < n; ++i)
 						ParseProperty(ArrayProperty->Inner, Helper.GetRawPtr(i));
 				}
-				else if (const auto StructProperty = Cast<UStructProperty>(Property))
+				else if (const auto StructProperty = CastField<FStructProperty>(Property))
 					IterateThroughStructProperty(StructProperty, ValuePtr);
 			}
 
-			static void IterateThroughStructProperty(UStructProperty* StructProperty, void* StructPtr)
+			static void IterateThroughStructProperty(FStructProperty* StructProperty, void* StructPtr)
 			{
                 const auto Struct = StructProperty->Struct;
-				for (TFieldIterator<UProperty> Iterator(Struct); Iterator; ++Iterator)
+				for (TFieldIterator<FProperty> Iterator(Struct); Iterator; ++Iterator)
 				{
                     const auto Property = *Iterator;
 					auto VariableName = Property->GetName();
